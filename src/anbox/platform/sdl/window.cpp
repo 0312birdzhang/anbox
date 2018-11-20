@@ -64,8 +64,6 @@ Window::Window(const std::shared_ptr<Renderer> &renderer,
     BOOST_THROW_EXCEPTION(std::runtime_error(message));
   }
 
-  if (utils::get_env_value("ANBOX_NO_SDL_WINDOW_HIT_TEST", "false") == "false")
-
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
   SDL_GetWindowWMInfo(window_, &info);
