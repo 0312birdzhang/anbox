@@ -390,7 +390,7 @@ target_link_libraries(anbox-core
   ${MIRCLIENT_LIBRARIES}
   ${LIBSYSTEMD_LDFLAGS}
   ${LIBSYSTEMD_LIBRARIES}
-  cpu_features
+  #cpu_features
   pthread
   process-cpp
   emugl_common
