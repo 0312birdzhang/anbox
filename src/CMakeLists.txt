@@ -81,7 +81,7 @@ else(USE_HEADLESS)
     anbox/graphics/emugl/TimeUtils.cpp
     anbox/graphics/emugl/TimeUtils.h
     anbox/graphics/emugl/WindowSurface.cpp
-    anbox/graphics/emugl/WindowSurface.h
+    anbox/graphics/emugl/WindowSurface.h)
    set(GRAPHICS_LIBRARIES GLESv1_dec GLESv2_dec renderControl_dec OpenGLESDispatch OpenglCodecCommon)
 endif(USE_HEADLESS)
 
