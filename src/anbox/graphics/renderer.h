@@ -17,9 +17,11 @@
 
 #ifndef ANBOX_GRAPHICS_RENDERER_H_
 #define ANBOX_GRAPHICS_RENDERER_H_
-
+#ifdef USE_HEADLESS
+#include "anbox/graphics/dummy_renderable.h"
+#else
 #include "anbox/graphics/emugl/Renderable.h"
-
+#endif
 #include <EGL/egl.h>
 
 namespace anbox {

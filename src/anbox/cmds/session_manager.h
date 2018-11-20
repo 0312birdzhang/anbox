@@ -23,8 +23,9 @@
 #include <functional>
 #include <iostream>
 #include <memory>
-
+#ifndef USE_HEADLESS
 #include "anbox/graphics/gl_renderer_server.h"
+#endif
 #include "anbox/graphics/rect.h"
 
 namespace anbox {

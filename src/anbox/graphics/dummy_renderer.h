@@ -14,17 +14,21 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "anbox/graphics/density.h"
-
-namespace anbox {
-namespace graphics {
-DensityType current_density() {
-  return DensityType::medium;
-}
-
-int dp_to_pixel(unsigned int dp) {
-  return dp * static_cast<unsigned int>(current_density()) / static_cast<unsigned int>(DensityType::medium);
-}
-}  // namespace graphics
-}  // namespace anbox
+ #ifndef ANBOX_GRAPHICS_DUMMY_RENDERER_H_
+#define ANBOX_GRAPHICS_DUMMY_RENDERER_H_
+ #ifdef USE_HEADLESS
+#include "anbox/graphics/dummy_renderable.h"
+#else
+#include "anbox/graphics/emugl/Renderable.h"
+#endif
+ #include "anbox/graphics/renderer.h"
+#include <EGL/egl.h>
+ class Renderer : public anbox::graphics::Renderer {
+ public:
+  virtual ~Renderer();
+   void destroyNativeWindow(EGLNativeWindowType native_window) {}
+   bool draw(EGLNativeWindowType native_window,
+                    const anbox::graphics::Rect& window_frame,
+                    const RenderableList& renderables) { return false; }
+};
+ #endif

@@ -11,14 +11,14 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wno-variadic-macros -Wextra -fPIC")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wno-variadic-macros -Wextra -fPIC")
 
 # By default, all symbols are visible in the library. We strip out things we don't
 # want at link time, by running a version script (see unity-scopes.map and the
 # setting of LINK_FLAGS below).
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
 
-set(C_AND_CXX_WARNINGS "-pedantic -Wall -Wextra")
+#set(C_AND_CXX_WARNINGS "-pedantic -Wall -Wextra")
 
 # Some additional warnings not included by the general flags set above.
 set(EXTRA_C_WARNINGS "-Wcast-align -Wcast-qual -Wformat -Wredundant-decls -Wswitch-default")
@@ -27,7 +27,7 @@ set(EXTRA_CXX_WARNINGS "-Wnon-virtual-dtor -Wold-style-cast")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_AND_CXX_WARNINGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_C_WARNINGS}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ${C_AND_CXX_WARNINGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${C_AND_CXX_WARNINGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_C_WARNINGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_WARNINGS}")
 
@@ -94,6 +94,21 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMESA_EGL_NO_X11_HEADERS")
 
+option(USE_HEADLESS "Use Headless Graphics Backend instead of Android EmuGL" OFF)
+if(USE_HEADLESS)
+  pkg_check_modules(WAYLAND_CLIENT wayland-client REQUIRED)
+  pkg_check_modules(WAYLAND_EGL wayland-egl REQUIRED)
+  pkg_check_modules(AUDIORESOURCE audioresource REQUIRED)
+  pkg_check_modules(GLIB glib-2.0 REQUIRED)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_HEADLESS -DWAYLAND_SUPPORT")
+else(USE_HEADLESS)
+  pkg_check_modules(WAYLAND_CLIENT wayland-client)
+  pkg_check_modules(WAYLAND_EGL wayland-egl)
+  if (WAYLANDCLIENT_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWAYLAND_SUPPORT")
+  endif()
+endif(USE_HEADLESS)
+
 #####################################################################
 # Enable code coverage calculation with gcov/gcovr/lcov
 # Usage:
@@ -109,9 +124,8 @@ IF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ftest-coverage -fprofile-arcs" )
 ENDIF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
 
-find_package(GMock)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 
 
 if (NOT ANBOX_VERSION)
@@ -129,8 +143,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/anbox/build/config.h.in
 
 add_subdirectory(external)
 add_subdirectory(src)
-add_subdirectory(tests)
 add_subdirectory(android)
+
+if(BUILD_TESTING)
+    find_package(GMock)
+    add_subdirectory(tests)
+endif(BUILD_TESTING)
 
 if (NOT "${HOST_CMAKE_C_COMPILER}" STREQUAL "")
   message(STATUS "Host C compiler: ${HOST_CMAKE_C_COMPILER}")
