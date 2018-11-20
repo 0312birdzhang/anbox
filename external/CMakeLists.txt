@@ -2,7 +2,7 @@ add_subdirectory(process-cpp-minimal)
 
 add_subdirectory(xdg)
 add_subdirectory(backward-cpp)
-add_subdirectory(cpu_features)
+#add_subdirectory(cpu_features)
 if (NOT USE_HEADLESS)
     add_subdirectory(android-emugl)
 else (NOT USE_HEADLESS)
