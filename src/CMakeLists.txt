@@ -113,8 +113,6 @@ target_link_libraries(anbox-protobuf
 set(SOURCES
     anbox/android/intent.cpp
     anbox/android/intent.h
-    #anbox/android/ip_config_builder.cpp
-    #anbox/android/ip_config_builder.h
 
     anbox/application/database.cpp
     anbox/application/database.h
@@ -153,8 +151,6 @@ set(SOURCES
     anbox/cmds/check_features.cpp
     anbox/cmds/check_features.h
 
-    #anbox/common/binary_writer.cpp
-    #anbox/common/binary_writer.h
     anbox/common/dispatcher.cpp
     anbox/common/dispatcher.h
     anbox/common/fd.cpp
