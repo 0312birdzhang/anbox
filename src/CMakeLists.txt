@@ -393,7 +393,8 @@ target_link_libraries(anbox-core
   emugl_common
   ${GL_LIBRARIES}
   anbox-protobuf
-  xdg)
+  xdg
+)
 
 add_executable(anbox main.cpp ${BACKWARD_ENABLE})
 target_link_libraries(anbox
@@ -405,4 +406,5 @@ install(
   TARGETS anbox
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib/static)
+  ARCHIVE DESTINATION lib/static
+)
