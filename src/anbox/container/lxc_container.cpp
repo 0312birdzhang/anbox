@@ -257,9 +257,9 @@ void LxcContainer::start(const Configuration &configuration) {
 #endif
 
 if (fs::exists("/sys/class/net/anboxbr0")) {
-  set_config_item("lxc.network.type", "veth");
-  set_config_item("lxc.network.flags", "up");
-  set_config_item("lxc.network.link", "anboxbr0");
+  set_config_item(lxc_config_net_type_key, "veth");
+  set_config_item(lxc_config_net_flags_key, "up");
+  set_config_item(lxc_config_net_link_key, "anboxbr0");
 }
 
 #ifdef ENABLE_SNAP_CONFINEMENT
