@@ -13,6 +13,7 @@ BuildRequires:  mesa-llvmpipe-libGLESv2-devel
 BuildRequires:  SDL2-devel
 BuildRequires:  SDL2_image-devel
 BuildRequires:  lxc-devel
+BuildRequires:  dbus-cpp-devel
 BuildRequires:  wayland-devel
 BuildRequires:  mesa-llvmpipe-libwayland-egl-devel
 BuildRequires:  protobuf-compiler
