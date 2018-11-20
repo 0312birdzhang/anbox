@@ -12,12 +12,9 @@ BuildRequires:  mesa-llvmpipe-libEGL-devel
 BuildRequires:  mesa-llvmpipe-libGLESv2-devel
 BuildRequires:  SDL2-devel
 BuildRequires:  SDL2_image-devel
-BuildRequires:  dbus-cpp-devel
 BuildRequires:  lxc-devel
 BuildRequires:  wayland-devel
 BuildRequires:  mesa-llvmpipe-libwayland-egl-devel
-BuildRequires:  systemd-devel
-BuildRequires:  systemd-libs
 BuildRequires:  protobuf-compiler
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(glib-2.0)
@@ -25,6 +22,7 @@ BuildRequires:  pkgconfig(sdl2)
 BuildRequires:  protobuf-lite-devel
 BuildRequires:  properties-cpp-devel
 BuildRequires:  pkgconfig(libcap)
+BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(audioresource)
 
 Requires:  binutils
@@ -52,7 +50,7 @@ Requires:  libprocess-cpp2
 %build
 mkdir -p build
 cd build
-%cmake -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Debug ..
+%cmake -DUSE_HEADLESS=ON -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Debug ..
 make %{?jobs:-j%jobs}
 
 %install
@@ -61,6 +59,7 @@ pushd build
 %make_install
 popd
 
+install -Dm 755 scripts/prepare-anbox.sh %{buildroot}/%{_bindir}/prepare-anbox
 install -Dm 755 scripts/anbox-bridge.sh %{buildroot}/%{_bindir}/anbox-bridge.sh
 install -Dm 755 scripts/anbox.sh %{buildroot}/%{_bindir}/anbox.sh
 install -Dm 644 %{_sourcedir}/anbox-container-manager.service %{buildroot}/%{_unitdir}/anbox-container-manager.service
@@ -87,6 +86,7 @@ prepare-anbox
 #%doc README COPYING
 %{_bindir}/anbox
 %{_bindir}/anbox.sh
+%{_bindir}/prepare-anbox
 %{_bindir}/anbox-bridge.sh
 
 %{_unitdir}/anbox-container-manager.service
