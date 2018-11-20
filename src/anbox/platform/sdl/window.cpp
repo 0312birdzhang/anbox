@@ -101,20 +101,6 @@ Window::~Window() {
 }
 
 
-
-void Window::close() {
-  if (observer_)
-    observer_->window_deleted(id_);
-}
-
-void Window::switch_window_state() {
-  const auto flags = SDL_GetWindowFlags(window_);
-  if (flags & SDL_WINDOW_MAXIMIZED)
-    SDL_RestoreWindow(window_);
-  else
-    SDL_MaximizeWindow(window_);
-}
-
 void Window::process_event(const SDL_Event &event) {
   switch (event.window.event) {
     case SDL_WINDOWEVENT_FOCUS_GAINED:
