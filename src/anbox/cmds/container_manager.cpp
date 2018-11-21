@@ -214,7 +214,7 @@ bool anbox::cmds::ContainerManager::setup_mounts() {
 
 
   for (const auto &dir_name : std::vector<std::string>{"cache", "data"}) {
-    auto target_dir_path = fs::path(final_android_rootfs_dir) / dir_name;
+    auto target_dir_path = fs::path(android_rootfs_dir) / dir_name;
     auto src_dir_path = SystemConfiguration::instance().data_dir() / dir_name;
 
     if (!fs::exists(src_dir_path)) {
@@ -246,24 +246,18 @@ bool anbox::cmds::ContainerManager::setup_mounts() {
 }
 
 bool anbox::cmds::ContainerManager::setup_rootfs_overlay() {
-  const auto combined_rootfs_path = SystemConfiguration::instance().combined_rootfs_dir();
-  if (!fs::exists(combined_rootfs_path))
-    fs::create_directories(combined_rootfs_path);
-
   const auto overlay_path = SystemConfiguration::instance().overlay_dir();
   if (!fs::exists(overlay_path))
     fs::create_directories(overlay_path);
-
-  const auto rootfs_path = SystemConfiguration::instance().rootfs_dir();
-  const auto overlay_config = utils::string_format("lowerdir=%s:%s", overlay_path, rootfs_path);
-  auto m = common::MountEntry::create("overlay", combined_rootfs_path, "overlay", MS_RDONLY, overlay_config.c_str());
-  if (!m) {
-    ERROR("Failed to setup rootfs overlay");
-    mounts_.clear();
+  const auto android_rootfs_dir = SystemConfiguration::instance().rootfs_dir();
+  if (!fs::exists(android_rootfs_dir))
+    fs::create_directory(android_rootfs_dir);
+  std::string options = "lowerdir=" + android_rootfs_dir + ",upperdir=" + SystemConfiguration::instance().overlay_dir() + ",workdir=" + android_rootfs_dir + "/../work";
+  auto o = common::MountEntry::create("overlay", android_rootfs_dir, "overlay", MS_MGC_VAL | MS_RDONLY | MS_PRIVATE, options);
+  if(!o) {
+    ERROR("Failed to mount Android overlay");
     return false;
   }
-  mounts_.push_back(m);
-
-  DEBUG("Successfully setup rootfs overlay");
+  mounts_.push_back(o);
   return true;
 }

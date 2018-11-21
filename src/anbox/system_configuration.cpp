@@ -55,16 +55,16 @@ std::string anbox::SystemConfiguration::rootfs_dir() const {
   return (data_path / "rootfs").string();
 }
 
-std::string anbox::SystemConfiguration::overlay_dir() const {
-  return (data_path / "rootfs-overlay").string();
-}
-
 std::string anbox::SystemConfiguration::combined_rootfs_dir() const {
   return (data_path / "combined-rootfs").string();
 }
 
 std::string anbox::SystemConfiguration::log_dir() const {
   return (data_path / "logs").string();
+}
+
+std::string anbox::SystemConfiguration::overlay_dir() const {
+  return (data_path / "overlay").string();
 }
 
 std::string anbox::SystemConfiguration::container_config_dir() const {
