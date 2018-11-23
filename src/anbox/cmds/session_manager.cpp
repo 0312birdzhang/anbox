@@ -87,6 +87,9 @@ void anbox::cmds::SessionManager::launch_appmgr_if_needed(const std::shared_ptr<
 anbox::cmds::SessionManager::SessionManager()
     : CommandWithFlagsAndAction{cli::Name{"session-manager"}, cli::Usage{"session-manager"},
                                 cli::Description{"Run the the anbox session manager"}},
+#ifndef USE_HEADLESS
+      gles_driver_(graphics::GLRendererServer::Config::Driver::Host),
+#endif                                
       window_size_(default_single_window_size) {
   // Just for the purpose to allow QtMir (or unity8) to find this on our
   // /proc/*/cmdline
@@ -94,6 +97,11 @@ anbox::cmds::SessionManager::SessionManager()
   flag(cli::make_flag(cli::Name{"desktop_file_hint"},
                       cli::Description{"Desktop file hint for QtMir/Unity8"},
                       desktop_file_hint_));
+#ifndef USE_HEADLESS
+  flag(cli::make_flag(cli::Name{"gles-driver"},
+                      cli::Description{"Which GLES driver to use. Possible values are 'host' or'translator'"},
+                      gles_driver_));
+#endif                      
   flag(cli::make_flag(cli::Name{"single-window"},
                       cli::Description{"Start in single window mode."},
                       single_window_));
