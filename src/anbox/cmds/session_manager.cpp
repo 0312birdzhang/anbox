@@ -296,8 +296,6 @@ anbox::cmds::SessionManager::SessionManager()
     if (use_system_dbus_)
       bus_type = anbox::dbus::Bus::Type::System;
     auto bus = std::make_shared<anbox::dbus::Bus>(bus_type);
-
-	bus->install_executor(core::dbus::asio::make_executor(bus, rt->service()));
     auto skeleton = anbox::dbus::skeleton::Service::create_for_bus(bus, app_manager);
 
     bus->run_async();
