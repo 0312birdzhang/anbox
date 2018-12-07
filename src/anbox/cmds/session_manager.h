@@ -23,6 +23,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <core/dbus/bus.h>
 #ifndef USE_HEADLESS
 #include "anbox/graphics/gl_renderer_server.h"
 #endif

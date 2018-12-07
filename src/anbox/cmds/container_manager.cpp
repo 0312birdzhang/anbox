@@ -259,5 +259,6 @@ bool anbox::cmds::ContainerManager::setup_rootfs_overlay() {
     return false;
   }
   mounts_.push_back(o);
+  DEBUG("Successfully setup rootfs overlay");
   return true;
 }

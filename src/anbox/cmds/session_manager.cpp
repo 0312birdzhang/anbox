@@ -29,6 +29,11 @@
 #include "anbox/bridge/platform_message_processor.h"
 #include "anbox/graphics/gl_renderer_server.h"
 
+namespace {
+std::istream& operator>>(std::istream& in, anbox::graphics::GLRendererServer::Config::Driver& driver);
+}
+
+
 #include "anbox/cmds/session_manager.h"
 #include "anbox/common/dispatcher.h"
 #include "anbox/system_configuration.h"
@@ -49,6 +54,8 @@
 #include "external/xdg/xdg.h"
 
 #include <sys/prctl.h>
+#include <core/dbus/asio/executor.h>
+#include <core/dbus/bus.h>
 
 #pragma GCC diagnostic pop
 
@@ -70,6 +77,19 @@ class NullConnectionCreator : public anbox::network::ConnectionCreator<
     socket->close();
   }
 };
+
+#ifndef USE_HEADLESS
+std::istream& operator>>(std::istream& in, anbox::graphics::GLRendererServer::Config::Driver& driver) {
+  std::string str(std::istreambuf_iterator<char>(in), {});
+  if (str.empty() || str == "translator")
+    driver = anbox::graphics::GLRendererServer::Config::Driver::Translator;
+  else if (str == "host")
+    driver = anbox::graphics::GLRendererServer::Config::Driver::Host;
+  else
+   BOOST_THROW_EXCEPTION(std::runtime_error("Invalid GLES driver value provided"));
+  return in;
+}
+#endif
 }
 
 void anbox::cmds::SessionManager::launch_appmgr_if_needed(const std::shared_ptr<bridge::AndroidApiStub> &android_api_stub) {
@@ -254,7 +274,7 @@ anbox::cmds::SessionManager::SessionManager()
       container_configuration.bind_mounts = {
 #ifndef USE_HEADLESS
         {qemu_pipe_connector->socket_file(), "/dev/qemu_pipe"},
-#endif       
+#endif
         {bridge_connector->socket_file(), "/dev/anbox_bridge"},
         {audio_server->socket_file(), "/dev/anbox_audio"},
         {SystemConfiguration::instance().input_device_dir(), "/dev/input"},
@@ -277,6 +297,7 @@ anbox::cmds::SessionManager::SessionManager()
       bus_type = anbox::dbus::Bus::Type::System;
     auto bus = std::make_shared<anbox::dbus::Bus>(bus_type);
 
+	bus->install_executor(core::dbus::asio::make_executor(bus, rt->service()));
     auto skeleton = anbox::dbus::skeleton::Service::create_for_bus(bus, app_manager);
 
     bus->run_async();
