@@ -202,15 +202,8 @@ anbox::cmds::SessionManager::SessionManager()
 
     const auto should_force_software_rendering = utils::get_env_value("ANBOX_FORCE_SOFTWARE_RENDERING", "false");
 #ifndef USE_HEADLESS
-    auto gl_driver = graphics::GLRendererServer::Config::Driver::Host;
-    if (should_force_software_rendering == "true" || use_software_rendering_)
-     gl_driver = graphics::GLRendererServer::Config::Driver::Software;
-
-    graphics::GLRendererServer::Config renderer_config {
-      gl_driver,
-      single_window_
-    };
-    auto gl_server = std::make_shared<graphics::GLRendererServer>(renderer_config, window_manager);
+    auto gl_server = std::make_shared<graphics::GLRendererServer>(
+          graphics::GLRendererServer::Config{gles_driver_, single_window_}, window_manager);
 #endif
     platform->set_window_manager(window_manager);
 #ifndef USE_HEADLESS
